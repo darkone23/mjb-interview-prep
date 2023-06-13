@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/postgres"
+	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	_ "github.com/lib/pq"
+	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/matthewjamesboyle/golang-interview-prep/internal/user"
 	"log"
@@ -15,7 +15,9 @@ import (
 
 func main() {
 
+	log.Println("Migrations: About to run...")
 	runMigrations()
+	log.Println("Migrations: complete!")
 
 	svc, err := user.NewService("admin", "admin")
 	if err != nil {
@@ -26,27 +28,30 @@ func main() {
 
 	http.HandleFunc("/user", h.AddUser)
 
-	log.Println("starting http server")
+	log.Println("HTTP: starting listen at http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func runMigrations() {
 	// Database connection string
-	dbURL := "postgres://admin:admin@localhost/test_repo?sslmode=disable"
 
-	db, err := sql.Open("postgres", dbURL)
+	dbURL := "./data/db.sqlite3" // "postgres://admin:admin@localhost/test_repo?sslmode=disable"
+	dbDriver := "sqlite3"
+	dbName := "app"
+
+	db, err := sql.Open(dbDriver, dbURL)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
 	// Create a new instance of the PostgreSQL driver for migrate
-	driver, err := postgres.WithInstance(db, &postgres.Config{})
+	driver, err := sqlite3.WithInstance(db, &sqlite3.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	m, err := migrate.NewWithDatabaseInstance("file://internal/migrations", "postgres", driver)
+	m, err := migrate.NewWithDatabaseInstance("file://internal/migrations", dbName, driver)
 	if err != nil {
 		log.Fatal(err)
 	}

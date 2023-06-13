@@ -13,7 +13,12 @@ well as a pair programming exercise.
 
 ## Getting Started
 
-You can get the database started by running `docker-compose up`
+Some dev tools brought in to make things easier:
+
+- devenv
+- direnv
+
+Once both are installed you can get the application started by running `direnv allow && just run`
 
 Once running the Go app, you can make a CURL request as follows:
 

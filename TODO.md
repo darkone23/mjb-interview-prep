@@ -1,0 +1,58 @@
+TODO:
+
+- [ x ] Datastore was checked into project
+  - We do not want our production data to be stored in our git repository
+    - Instead each unique deploy will require its own configuration
+- [ x ] we don't need postgres or docker...
+  - external data dependencies bring extra custodial complexity
+    - is the DB local to us? or do we need to establish a secure connection?
+  - let's just use sqlite3: fast enough until we scale to the megabucks
+    - simpler to run today, easy to swap out later
+    - considerations: will be harder if we have an existing dataset
+      - would require a careful migration path
+- [ ] SQL injection vuln in internal/user/service.go
+  - Need to use prepared statements
+- [ ] AddUser impl is wrong
+  - using Query instead of Statement for insert
+    - cannot query a null id...
+- [ ] Passwords stored in plaintext
+  - Should instead compare against some strong password blob
+    - I usually use bcrypt but argon2 is popular these days
+- [ ] should probably use an ORM
+  - enforce struct aligns with database
+    - let's use https://github.com/volatiletech/sqlboiler
+- [ ] proper app configuration
+  - where is the database located?
+    - let's use https://github.com/spf13/viper 
+- [ ] usernames should be unique
+  - current migration has no such requirement
+- [ ] no need to store passwords in memory
+  - we could accidentally leak it
+- [ ] do not allow plaintext passwords over HTTP
+  - clients MUST send us an argon2 hash to store
+    - it is the clients problem how they get it
+- [ ] application should maintain a database connection
+  - today each call to svc.AddUser opens a new database connection
+    - instead we should have a shared connection pool
+    - see https://turriate.com/articles/making-sqlite-faster-in-go for sqlite3 details
+      - as written today will throw lock contention on sqlite3
+- [ ] better error handling
+  - need at least some logging stuff so we can debug our errors
+    - better would be proper instrumentation / observability
+- [ ] other basic REST operations for User
+  - PUT /user/:id
+  - DELETE /user/:id
+  - GET /user 
+  - GET /user/:id
+
+General questions:
+
+- What is the context and use case of our service?
+  - Do we need authentication?
+    - Is it assumed anyone who can connect to our socket is already authenticated?
+  - Do we need access controls?
+    - Are there some operations only certain users can do?
+- What is our desired user interface?
+  - We are already over HTTP - are we a remote web API?
+  - Do we want an HTML interface?
+  - Do we want a command line text interface?
