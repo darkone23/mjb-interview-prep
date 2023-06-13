@@ -27,6 +27,7 @@ fix any security holes, and learn some go along the way!
 - Fix security issues in user table
   - Enforce unique usernames, unique passwords (!)
 - Implement some basic REST methods
+- Added web module for npm based frontend 
 
 ## Getting Started
 
@@ -35,7 +36,7 @@ Some dev tools are used to make life easier:
 - [devenv](https://devenv.sh/)
 - [direnv](https://direnv.net/)
 
-Once both are installed you can get the application started by running `direnv allow && just setup-and-serve`
+Once both are installed you can get the application started by running `direnv allow && just setup-to-serve`
 
 This will setup and migrate a local sqlite DB, code generate some schema files, and get your server running.
 

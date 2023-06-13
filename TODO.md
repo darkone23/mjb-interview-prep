@@ -52,7 +52,11 @@ TODO:
       - auth requirements: 
         - client creates and sends a consistent hash
         - server creates a consistent hash from this and checks against what is stored in DB
-- [ ] implement basic html+js frontend
+- [ x ] wire up frontend
+- [  ] basic html+js frontend
+  - [ ] signup
+  - [ ] login
+  - [ ] listing
 
 General questions:
 

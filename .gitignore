@@ -1,7 +1,9 @@
 data/
+server/models/
+web/node_modules/
+web/dist/
 .idea/
+.direnv/
 .devenv/
 .devenv.flake.nix
 .pre-commit-config.yaml
-.direnv/
-models/

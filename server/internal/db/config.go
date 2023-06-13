@@ -7,7 +7,7 @@ import (
 )
 
 type Sqlite3Conf struct {
-	ConnectionUrl string `mapstructure:"dbname"`
+	DbName string `mapstructure:"dbname"`
 }
 
 type SqlConf struct {
@@ -33,7 +33,7 @@ func LoadConfig() SqlConf {
 		log.Printf("couldn't read config: %s\n", err)
 	}
 
-	if c.Sqlite.ConnectionUrl == "" {
+	if c.Sqlite.DbName == "" {
 		log.Fatalf("Connection URL should not be empty!")
 	}
 

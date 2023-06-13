@@ -10,6 +10,10 @@
     pkgs.just
     pkgs.sqlite
     pkgs.libargon2
+    pkgs.nodePackages.typescript-language-server
+    pkgs.nodePackages.vscode-css-languageserver-bin
+    pkgs.nodePackages.vscode-html-languageserver-bin
+    pkgs.nodePackages.vscode-json-languageserver-bin
   ];
 
   # https://devenv.sh/scripts/
@@ -23,6 +27,7 @@
   # https://devenv.sh/languages/
   languages.nix.enable = true;
   languages.go.enable = true;
+  languages.javascript.enable = true;
 
   # https://devenv.sh/processes/
   processes.server.exec = "just server";

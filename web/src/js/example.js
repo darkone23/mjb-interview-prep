@@ -1,0 +1,1 @@
+export const example = () => `basic web ui`

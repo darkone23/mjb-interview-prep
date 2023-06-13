@@ -2,6 +2,8 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
+	"os"
 	// "log"
 )
 
@@ -24,10 +26,11 @@ func (pool *DbConnectionPool) Open(conf SqlConf) {
 	for i := 0; i < pool.size; i++ {
 		go func(i int) {
 			// log.Printf("Spinning up db connection %d of %d", i, pool.size)
-			dbConn := conf.Sqlite.ConnectionUrl
+			data_dir := os.Getenv("DATA_HOME")
+			dbURL := fmt.Sprintf("file:%s/%s", data_dir, conf.Sqlite.DbName)
 			dbDriver := "sqlite3"
 
-			db, err := sql.Open(dbDriver, dbConn)
+			db, err := sql.Open(dbDriver, dbURL)
 			if err != nil {
 				panic(err)
 			}

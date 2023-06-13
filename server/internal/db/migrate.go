@@ -2,17 +2,21 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"log"
+	"os"
 )
 
 func RunMigrations(conf SqlConf) {
 	// Database connection string
-	log.Println("Migrations: About to run...")
 
-	dbURL := conf.Sqlite.ConnectionUrl
+	data_dir := os.Getenv("DATA_HOME")
+	dbURL := fmt.Sprintf("file:%s/%s", data_dir, conf.Sqlite.DbName)
+
+	log.Printf("Migrations: About to migrate: %s", dbURL)
 
 	dbDriver := "sqlite3"
 	dbName := "sqlite3"
