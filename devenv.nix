@@ -12,6 +12,7 @@
     pkgs.nushell
     pkgs.tmux
     pkgs.sqlite
+    pkgs.libargon2
   ];
 
   # https://devenv.sh/scripts/

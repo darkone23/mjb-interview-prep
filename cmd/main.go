@@ -8,8 +8,9 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/mattn/go-sqlite3"
 
-	"github.com/matthewjamesboyle/golang-interview-prep/internal/user"
+	"github.com/gin-gonic/gin"
 	"log"
+	"mjb-interview-prep/internal/user"
 	"net/http"
 )
 
@@ -24,9 +25,21 @@ func main() {
 		log.Fatal(err)
 	}
 
+	r := gin.Default()
+
 	h := user.Handler{Svc: *svc}
 
-	http.HandleFunc("/user", h.AddUser)
+	// r.GET("/ping", func(c *gin.Context) {
+	// 	c.JSON(http.StatusOK, gin.H{
+	// 		"message": "pong",
+	// 	})
+	// })
+
+	r.POST("/user", h.AddUser)
+
+	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+
+	// http.HandleFunc("/user", h.AddUser)
 
 	log.Println("HTTP: starting listen at http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

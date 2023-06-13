@@ -1,8 +1,12 @@
 package user
 
 import (
-	"encoding/json"
+	// "encoding/json"
+	// "fmt"
 	"log"
+
+	"github.com/gin-gonic/gin"
+	// "log"
 	"net/http"
 )
 
@@ -10,30 +14,17 @@ type Handler struct {
 	Svc service
 }
 
-func (h Handler) AddUser(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-
-	var u User
-	err := json.NewDecoder(r.Body).Decode(&u)
+func (h Handler) AddUser(c *gin.Context) {
+	var user User
+	err := c.BindJSON(&user)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Invalid request body"))
-		log.Printf("Could not decode json: %s", err)
-		return
+		log.Printf("No good: %s\n", err)
 	}
-	// Call the AddUser function
-	message, err := h.Svc.AddUser(u)
+	message, err := h.Svc.AddUser(user)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Failed to add user"))
-		log.Printf("Failed to add user: %s", err)
-		return
+		log.Printf("Error creating user: %s", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+	} else {
+		c.JSON(http.StatusOK, message)
 	}
-
-	// Return a success response
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(message))
 }

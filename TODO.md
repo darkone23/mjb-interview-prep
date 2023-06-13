@@ -10,36 +10,40 @@ TODO:
     - simpler to run today, easy to swap out later
     - considerations: will be harder if we have an existing dataset
       - would require a careful migration path
-- [ ] SQL injection vuln in internal/user/service.go
-  - Need to use prepared statements
-- [ ] AddUser impl is wrong
+- [ x ] AddUser impl is wrong
   - using Query instead of Statement for insert
     - cannot query a null id...
-- [ ] Passwords stored in plaintext
-  - Should instead compare against some strong password blob
-    - I usually use bcrypt but argon2 is popular these days
-- [ ] should probably use an ORM
+- [ x ] SQL injection vuln in internal/user/service.go
+  - Need to use prepared statements
+- [ x ] better http routing
+  - using gin so we don't have to roll this all ourselves
+- [ x ] should probably use an ORM
   - enforce struct aligns with database
     - let's use https://github.com/volatiletech/sqlboiler
-- [ ] proper app configuration
-  - where is the database located?
-    - let's use https://github.com/spf13/viper 
-- [ ] usernames should be unique
+- [ x ] usernames should be unique
   - current migration has no such requirement
-- [ ] no need to store passwords in memory
-  - we could accidentally leak it
-- [ ] do not allow plaintext passwords over HTTP
-  - clients MUST send us an argon2 hash to store
+- [ ] do not store or send plaintext passwords over HTTP
+  - vulnerable to mitm attacks between client and server
+  - storing plaintext makes us vulnerable to database compromises
+  - solution: clients send us an argon2 hash to store
     - it is the clients problem how they get it
+      - libargon2, argon2-browser are good sources
+    - server will not store this client generated key but will store a hash of it
+      - auth requirements: 
+        - client creates and sends a consistent hash
+        - server creates a consistent hash from this and checks against what is stored in DB
 - [ ] application should maintain a database connection
   - today each call to svc.AddUser opens a new database connection
     - instead we should have a shared connection pool
     - see https://turriate.com/articles/making-sqlite-faster-in-go for sqlite3 details
       - as written today will throw lock contention on sqlite3
+- [ ] proper app configuration
+  - where is the database located?
+    - can probably use sqlboiler stuff for this
 - [ ] better error handling
   - need at least some logging stuff so we can debug our errors
     - better would be proper instrumentation / observability
-- [ ] other basic REST operations for User
+- [ ] implement other basic REST operations for User
   - PUT /user/:id
   - DELETE /user/:id
   - GET /user 

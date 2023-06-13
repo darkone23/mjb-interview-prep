@@ -1,10 +1,14 @@
 package user
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
+	"mjb-interview-prep/models"
+
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
 type service struct {
@@ -20,8 +24,10 @@ func NewService(dbUser, dbPassword string) (*service, error) {
 }
 
 type User struct {
-	Name     string
-	Password string
+	Name string `json:"username" xml:"username" binding:"required"`
+	// server generated argon2 encoded password hash
+	// why argon2 encoded? because we will use the encoded salt to compare
+	Password string `json:"password" xml:"password" binding:"required"`
 }
 
 func (s *service) AddUser(u User) (string, error) {
@@ -34,17 +40,15 @@ func (s *service) AddUser(u User) (string, error) {
 	}
 	defer db.Close()
 
-	var id string
-	// TODO: SQL injection detected... need to use prepared statement
-	// would be better to just import some ORM lib
-	q := "INSERT INTO users (username, password) VALUES ('" + u.Name + "', '" + u.Password + "') RETURNING id"
+	db_user := &models.User{
+		Username: u.Name,
+		Password: u.Password,
+	}
 
-	// cannot use query to insert...
-	// cannot scan a nonexistent id...
-	err = db.QueryRow(q).Scan(&id)
+	err = db_user.Insert(context.Background(), db, boil.Infer())
 	if err != nil {
 		return "", fmt.Errorf("failed to insert: %w", err)
 	}
 
-	return id, nil
+	return fmt.Sprintf("%d", db_user.UserID), nil
 }
