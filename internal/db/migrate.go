@@ -8,7 +8,7 @@ import (
 	"log"
 )
 
-func RunMigrations(conf DbConf) {
+func RunMigrations(conf SqlConf) {
 	// Database connection string
 	log.Println("Migrations: About to run...")
 

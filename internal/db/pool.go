@@ -20,7 +20,7 @@ func NewDbConnectionPool(maxConcurrency int) DbConnectionPool {
 
 }
 
-func (pool *DbConnectionPool) Open(conf DbConf) {
+func (pool *DbConnectionPool) Open(conf SqlConf) {
 	for i := 0; i < pool.size; i++ {
 		go func(i int) {
 			// log.Printf("Spinning up db connection %d of %d", i, pool.size)
@@ -31,7 +31,7 @@ func (pool *DbConnectionPool) Open(conf DbConf) {
 			if err != nil {
 				panic(err)
 			}
-
+			db.SetMaxOpenConns(1)
 			pool.semaphore <- db
 		}(i)
 	}

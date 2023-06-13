@@ -4,16 +4,17 @@ import (
 	"context"
 	"fmt"
 	"github.com/volatiletech/sqlboiler/v4/boil"
+	// "log"
 	"mjb-interview-prep/internal/db"
 	"mjb-interview-prep/models"
 )
 
 type service struct {
-	conf db.DbConf
+	conf db.SqlConf
 	pool db.DbConnectionPool
 }
 
-func NewService(conf db.DbConf, maxConcurrency int) (service, error) {
+func NewService(conf db.SqlConf, maxConcurrency int) (service, error) {
 	pool := db.NewDbConnectionPool(maxConcurrency)
 	return service{
 		conf: conf,
@@ -29,22 +30,41 @@ func (svc service) Close() {
 	svc.pool.Close()
 }
 
-type User struct {
-	Name string `json:"username" xml:"username" binding:"required"`
-	// server generated argon2 encoded password hash
-	// why argon2 encoded? because we will use the encoded salt to compare
-	Password string `json:"password" xml:"password" binding:"required"`
-}
-
-func (s service) AddUser(u User) (string, error) {
+func (s service) FindAllUsers() ([]UserDto, error) {
 	db := s.pool.Acquire()
 	defer s.pool.Release(db)
 
-	db_user := &models.User{
-		Username: u.Name,
-		Password: u.Password,
+	users, err := models.Users().All(context.Background(), db)
+	if err != nil {
+		return []UserDto{}, err
+	} else {
+		var dtos = make([]UserDto, len(users))
+		for i, u := range users {
+			dtos[i] = FromModel(u)
+		}
+		return dtos, nil
 	}
+}
 
+func (s service) FindUser(id int) (UserDto, error) {
+	db := s.pool.Acquire()
+	defer s.pool.Release(db)
+
+	var dto UserDto
+	var found *models.User
+
+	found, err := models.FindUser(context.Background(), db, int64(id))
+	if err == nil {
+		dto = FromModel(found)
+	}
+	return dto, err
+}
+
+func (s service) AddUser(u UserDto) (string, error) {
+	db := s.pool.Acquire()
+	defer s.pool.Release(db)
+
+	db_user := u.ToModel()
 	var err = db_user.Insert(context.Background(), db, boil.Infer())
 	if err != nil {
 		return "", fmt.Errorf("failed to insert: %s", err)

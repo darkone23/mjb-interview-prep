@@ -18,12 +18,15 @@ fix any security holes, and learn some go along the way!
   - fixes http response & marshalling issues
 - Add ORM library (sqlboiler)
   - fixes sql vulnerabilities found in hand-rolled SQL
-- Update dev toolchain (devenv)
 - Add build script (just)
+- Update dev toolchain (devenv)
+  - Add github CI
 - Ported db from postgres to sqlite
+  - ["one process programming"](https://crawshaw.io/blog/one-process-programming-notes)
 - Use environment variables to connect to database
 - Fix security issues in user table
   - Enforce unique usernames, unique passwords (!)
+- Implement some basic REST methods
 
 ## Getting Started
 

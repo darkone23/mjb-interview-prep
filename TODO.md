@@ -30,14 +30,14 @@ TODO:
     - instead we should have a shared connection pool
     - see https://turriate.com/articles/making-sqlite-faster-in-go for sqlite3 details
       - as written today will throw lock contention on sqlite3
-- [ ] better error handling
+- [ x ] better error handling
   - need at least some logging stuff so we can debug our errors
     - better would be proper instrumentation / observability
 - [ ] implement other basic REST operations for User
-  - PUT /user/:id
-  - DELETE /user/:id
-  - GET /user 
-  - GET /user/:id
+  - [ x ] GET /user 
+  - [ x ] GET /user/:id
+  - [ ] DELETE /user/:id
+  - [ ] PUT /user/:id
 - [ ] basic test coverage
   - set up build action to test on commit
 - [ ] implement signup and authentication workflow

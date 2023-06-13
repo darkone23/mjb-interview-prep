@@ -23,9 +23,11 @@ func main() {
 	r := gin.Default()
 	r.SetTrustedProxies(nil)
 
-	h := user.Handler{Svc: svc}
+	h := user.NewUserRoutes(svc)
 
 	r.POST("/user", h.AddUser)
+	r.GET("/user", h.ListUser)
+	r.GET("/user/:user_id", h.GetUser)
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 

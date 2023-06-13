@@ -10,11 +10,11 @@ type Sqlite3Conf struct {
 	ConnectionUrl string `mapstructure:"dbname"`
 }
 
-type DbConf struct {
+type SqlConf struct {
 	Sqlite Sqlite3Conf `mapstructure:"sqlite3"`
 }
 
-func LoadConfig() DbConf {
+func LoadConfig() SqlConf {
 	v := viper.New()
 	config_path := os.Getenv("SQL_CONFIG")
 
@@ -28,7 +28,7 @@ func LoadConfig() DbConf {
 		log.Fatalf("couldn't load db config: %s\n", err)
 	}
 
-	var c DbConf
+	var c SqlConf
 	if err := v.Unmarshal(&c); err != nil {
 		log.Printf("couldn't read config: %s\n", err)
 	}
