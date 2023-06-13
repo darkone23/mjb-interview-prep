@@ -1,22 +1,36 @@
 # golang interview prep
 
 ## Goal of this repo.
+ 
+This repo is a fork of https://github.com/MatthewJamesBoyle/golang-interview-prep
 
-This repo contains Golang code that does not follow best practises, contains bugs and security issues. It is intended to
-be used as an interview exercise or a practise exercise for jr/mid-level Go engineers.
+The original repo was created as a coding exercise: It was partially generated 
+by ChatGPT and did not follow best practices, contained multiple bugs and security issues.
 
-This repo contains, technically, a functional golang application that receives a request to create a user and stores it
-into a postgres Database.
+The basics of this application: create a user and store it in the database
 
-As an exercise, you could try identifying and correcting some of the issues in this repo. This would work particularly
-well as a pair programming exercise.
+This repo is a modification of that repo to bring it up to date with web programming best practices, 
+fix any security holes, and learn some go along the way!
+
+## Changes made so far:
+
+- Add HTTP routing library (gin)
+  - fixes http response & marshalling issues
+- Add ORM library (sqlboiler)
+  - fixes sql vulnerabilities found in hand-rolled SQL
+- Update dev toolchain (devenv)
+- Add build script (just)
+- Ported db from postgres to sqlite
+- Use environment variables to connect to database
+- Fix security issues in user table
+  - Enforce unique usernames, unique passwords (!)
 
 ## Getting Started
 
-Some dev tools brought in to make things easier:
+Some dev tools are used to make life easier:
 
-- devenv
-- direnv
+- [devenv](https://devenv.sh/)
+- [direnv](https://direnv.net/)
 
 Once both are installed you can get the application started by running `direnv allow && just setup-and-run`
 
