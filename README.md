@@ -18,7 +18,9 @@ Some dev tools brought in to make things easier:
 - devenv
 - direnv
 
-Once both are installed you can get the application started by running `direnv allow && just run`
+Once both are installed you can get the application started by running `direnv allow && just setup-and-run`
+
+This will setup and migrate a local sqlite DB, code generate some schema files, and get your server running.
 
 Once running the Go app, you can make a CURL request as follows:
 

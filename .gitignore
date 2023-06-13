@@ -3,3 +3,4 @@ data/
 .devenv/
 .devenv.flake.nix
 .direnv/
+models/

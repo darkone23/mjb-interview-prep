@@ -1,4 +1,4 @@
-package main
+package db
 
 import (
 	"database/sql"
@@ -7,46 +7,12 @@ import (
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/mattn/go-sqlite3"
-
-	"github.com/gin-gonic/gin"
 	"log"
-	"mjb-interview-prep/internal/user"
-	"net/http"
 )
 
-func main() {
-
-	log.Println("Migrations: About to run...")
-	runMigrations()
-	log.Println("Migrations: complete!")
-
-	svc, err := user.NewService("admin", "admin")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	r := gin.Default()
-
-	h := user.Handler{Svc: *svc}
-
-	// r.GET("/ping", func(c *gin.Context) {
-	// 	c.JSON(http.StatusOK, gin.H{
-	// 		"message": "pong",
-	// 	})
-	// })
-
-	r.POST("/user", h.AddUser)
-
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
-
-	// http.HandleFunc("/user", h.AddUser)
-
-	log.Println("HTTP: starting listen at http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
-}
-
-func runMigrations() {
+func RunMigrations() {
 	// Database connection string
+	log.Println("Migrations: About to run...")
 
 	dbURL := "./data/db.sqlite3" // "postgres://admin:admin@localhost/test_repo?sslmode=disable"
 	dbDriver := "sqlite3"
