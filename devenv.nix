@@ -8,9 +8,6 @@
   packages = [ 
     pkgs.git
     pkgs.just
-    pkgs.helix
-    pkgs.nushell
-    pkgs.tmux
     pkgs.sqlite
     pkgs.libargon2
   ];
@@ -27,11 +24,17 @@
   languages.nix.enable = true;
   languages.go.enable = true;
 
-  # https://devenv.sh/pre-commit-hooks/
-  # pre-commit.hooks.shellcheck.enable = true;
-
   # https://devenv.sh/processes/
-  # processes.ping.exec = "ping example.com";
+  processes.server.exec = "just server";
 
   # See full reference at https://devenv.sh/reference/options/
+  difftastic.enable = true;
+
+  # https://devenv.sh/pre-commit-hooks/
+  pre-commit.hooks = {
+    gotest.enable = true;
+    gofmt.enable = true;
+  };
+
+
 }

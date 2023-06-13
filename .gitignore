@@ -2,5 +2,6 @@ data/
 .idea/
 .devenv/
 .devenv.flake.nix
+.pre-commit-config.yaml
 .direnv/
 models/

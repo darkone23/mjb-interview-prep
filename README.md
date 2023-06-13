@@ -32,7 +32,7 @@ Some dev tools are used to make life easier:
 - [devenv](https://devenv.sh/)
 - [direnv](https://direnv.net/)
 
-Once both are installed you can get the application started by running `direnv allow && just setup-and-run`
+Once both are installed you can get the application started by running `direnv allow && just setup-and-serve`
 
 This will setup and migrate a local sqlite DB, code generate some schema files, and get your server running.
 
