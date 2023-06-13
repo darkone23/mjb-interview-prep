@@ -37,7 +37,7 @@ TODO:
     - instead we should have a shared connection pool
     - see https://turriate.com/articles/making-sqlite-faster-in-go for sqlite3 details
       - as written today will throw lock contention on sqlite3
-- [ ] proper app configuration
+- [ x ] proper app configuration
   - where is the database located?
     - can probably use sqlboiler stuff for this
 - [ ] better error handling

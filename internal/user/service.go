@@ -3,8 +3,8 @@ package user
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
+	"mjb-interview-prep/internal/db"
 	"mjb-interview-prep/models"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -12,15 +12,11 @@ import (
 )
 
 type service struct {
-	dbUser     string
-	dbPassword string
+	conf db.DbConf
 }
 
-func NewService(dbUser, dbPassword string) (*service, error) {
-	if dbUser == "" {
-		return nil, errors.New("dbUser was empty")
-	}
-	return &service{dbUser: dbUser, dbPassword: dbPassword}, nil
+func NewService(conf db.DbConf) (*service, error) {
+	return &service{conf: conf}, nil
 }
 
 type User struct {
@@ -31,8 +27,8 @@ type User struct {
 }
 
 func (s *service) AddUser(u User) (string, error) {
-	dbConn := "data/db.sqlite3" // "postgres://admin:admin@localhost/test_repo?sslmode=disable"
-	dbDriver := "sqlite3"       // "postgres"
+	dbConn := s.conf.Sqlite.ConnectionUrl
+	dbDriver := "sqlite3" // "postgres"
 
 	db, err := sql.Open(dbDriver, dbConn)
 	if err != nil {

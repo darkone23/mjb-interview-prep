@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -10,13 +9,14 @@ import (
 	"log"
 )
 
-func RunMigrations() {
+func RunMigrations(conf DbConf) {
 	// Database connection string
 	log.Println("Migrations: About to run...")
 
-	dbURL := "./data/db.sqlite3" // "postgres://admin:admin@localhost/test_repo?sslmode=disable"
+	dbURL := conf.Sqlite.ConnectionUrl
+
 	dbDriver := "sqlite3"
-	dbName := "app"
+	dbName := "sqlite3"
 
 	db, err := sql.Open(dbDriver, dbURL)
 	if err != nil {
@@ -24,8 +24,9 @@ func RunMigrations() {
 	}
 	defer db.Close()
 
-	// Create a new instance of the PostgreSQL driver for migrate
-	driver, err := sqlite3.WithInstance(db, &sqlite3.Config{})
+	driver, err := sqlite3.WithInstance(db, &sqlite3.Config{
+		DatabaseName: dbName,
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,5 +41,5 @@ func RunMigrations() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Database migration complete.")
+	log.Println("Migrations: complete!")
 }

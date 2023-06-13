@@ -9,9 +9,10 @@ import (
 
 func main() {
 
-	db.RunMigrations()
+	conf := db.LoadConfig()
+	db.RunMigrations(conf)
 
-	svc, err := user.NewService("admin", "admin")
+	svc, err := user.NewService(conf)
 	if err != nil {
 		log.Fatal(err)
 	}

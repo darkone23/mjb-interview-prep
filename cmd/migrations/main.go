@@ -6,6 +6,7 @@ import (
 
 func main() {
 
-	db.RunMigrations()
+	config := db.LoadConfig()
+	db.RunMigrations(config)
 
 }
