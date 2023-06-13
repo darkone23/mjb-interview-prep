@@ -12,14 +12,18 @@ func main() {
 	conf := db.LoadConfig()
 	db.RunMigrations(conf)
 
-	svc, err := user.NewService(conf)
+	svc, err := user.NewService(conf, 8)
+	svc.Open()
+	defer svc.Close()
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	r := gin.Default()
+	r.SetTrustedProxies(nil)
 
-	h := user.Handler{Svc: *svc}
+	h := user.Handler{Svc: svc}
 
 	r.POST("/user", h.AddUser)
 

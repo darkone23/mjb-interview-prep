@@ -19,6 +19,6 @@ jobs:
     - name: Install devenv.sh
       run: nix profile install github:cachix/devenv/latest
       shell: sh
-    - run: devenv shell just setup migrate codegen lint
+    - run: devenv shell just ci
     - run: devenv ci
 

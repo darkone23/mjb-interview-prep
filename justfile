@@ -12,4 +12,5 @@ migrate:
 codegen:
 	sqlboiler -c $SQL_CONFIG sqlite3
 	find models -name '*test.go' -delete
+ci: setup migrate codegen lint
 setup-and-serve: setup migrate codegen server

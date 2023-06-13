@@ -22,6 +22,26 @@ TODO:
     - let's use https://github.com/volatiletech/sqlboiler
 - [ x ] usernames should be unique
   - current migration has no such requirement
+- [ x ] proper app configuration
+  - where is the database located?
+    - can probably use sqlboiler stuff for this
+- [ x ] application should maintain a database connection
+  - today each call to svc.AddUser opens a new database connection
+    - instead we should have a shared connection pool
+    - see https://turriate.com/articles/making-sqlite-faster-in-go for sqlite3 details
+      - as written today will throw lock contention on sqlite3
+- [ ] better error handling
+  - need at least some logging stuff so we can debug our errors
+    - better would be proper instrumentation / observability
+- [ ] implement other basic REST operations for User
+  - PUT /user/:id
+  - DELETE /user/:id
+  - GET /user 
+  - GET /user/:id
+- [ ] basic test coverage
+  - set up build action to test on commit
+- [ ] implement signup and authentication workflow
+  - use JWT auth
 - [ ] do not store or send plaintext passwords over HTTP
   - vulnerable to mitm attacks between client and server
   - storing plaintext makes us vulnerable to database compromises
@@ -32,22 +52,7 @@ TODO:
       - auth requirements: 
         - client creates and sends a consistent hash
         - server creates a consistent hash from this and checks against what is stored in DB
-- [ ] application should maintain a database connection
-  - today each call to svc.AddUser opens a new database connection
-    - instead we should have a shared connection pool
-    - see https://turriate.com/articles/making-sqlite-faster-in-go for sqlite3 details
-      - as written today will throw lock contention on sqlite3
-- [ x ] proper app configuration
-  - where is the database located?
-    - can probably use sqlboiler stuff for this
-- [ ] better error handling
-  - need at least some logging stuff so we can debug our errors
-    - better would be proper instrumentation / observability
-- [ ] implement other basic REST operations for User
-  - PUT /user/:id
-  - DELETE /user/:id
-  - GET /user 
-  - GET /user/:id
+- [ ] implement basic html+js frontend
 
 General questions:
 

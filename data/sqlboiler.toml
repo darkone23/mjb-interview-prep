@@ -1,3 +1,3 @@
 [sqlite3]
-dbname = "data/db.sqlite3"
+dbname = "data/db.sqlite3?cache=shared&mode=rwc&_journal_mode=WAL"
 blacklist = [ "schema_migrations" ]

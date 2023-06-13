@@ -2,21 +2,31 @@ package user
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
+	"github.com/volatiletech/sqlboiler/v4/boil"
 	"mjb-interview-prep/internal/db"
 	"mjb-interview-prep/models"
-
-	_ "github.com/mattn/go-sqlite3"
-	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
 type service struct {
 	conf db.DbConf
+	pool db.DbConnectionPool
 }
 
-func NewService(conf db.DbConf) (*service, error) {
-	return &service{conf: conf}, nil
+func NewService(conf db.DbConf, maxConcurrency int) (service, error) {
+	pool := db.NewDbConnectionPool(maxConcurrency)
+	return service{
+		conf: conf,
+		pool: pool,
+	}, nil
+}
+
+func (svc service) Open() {
+	svc.pool.Open(svc.conf)
+}
+
+func (svc service) Close() {
+	svc.pool.Close()
 }
 
 type User struct {
@@ -26,24 +36,18 @@ type User struct {
 	Password string `json:"password" xml:"password" binding:"required"`
 }
 
-func (s *service) AddUser(u User) (string, error) {
-	dbConn := s.conf.Sqlite.ConnectionUrl
-	dbDriver := "sqlite3" // "postgres"
-
-	db, err := sql.Open(dbDriver, dbConn)
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
+func (s service) AddUser(u User) (string, error) {
+	db := s.pool.Acquire()
+	defer s.pool.Release(db)
 
 	db_user := &models.User{
 		Username: u.Name,
 		Password: u.Password,
 	}
 
-	err = db_user.Insert(context.Background(), db, boil.Infer())
+	var err = db_user.Insert(context.Background(), db, boil.Infer())
 	if err != nil {
-		return "", fmt.Errorf("failed to insert: %w", err)
+		return "", fmt.Errorf("failed to insert: %s", err)
 	}
 
 	return fmt.Sprintf("%d", db_user.UserID), nil
